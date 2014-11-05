@@ -78,6 +78,7 @@ class HipChat extends Adapter
       autojoin: process.env.HUBOT_HIPCHAT_JOIN_ROOMS_ON_INVITE isnt "false"
       xmppDomain: process.env.HUBOT_HIPCHAT_XMPP_DOMAIN or null
       reconnect: process.env.HUBOT_HIPCHAT_RECONNECT isnt "false"
+      prefix: process.env.HUBOT_HIPCHAT_PREFIX or "hubot"
 
     @logger.debug "HipChat adapter options: #{JSON.stringify @options}"
 
@@ -177,7 +178,7 @@ class HipChat extends Adapter
           # reformat leading @mention name to be like "name: message" which is
           # what hubot expects
           mention_name = connector.mention_name
-          regex = new RegExp "^@#{mention_name}\\b", "i"
+          regex = new RegExp "^#{@options.prefix}\\s*", "i"
           message = message.replace regex, "#{mention_name}: "
           handleMessage
             getAuthor: => @robot.brain.userForName(from) or new User(from)
